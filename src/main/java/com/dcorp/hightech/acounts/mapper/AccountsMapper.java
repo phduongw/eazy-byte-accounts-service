@@ -7,7 +7,7 @@ public class AccountsMapper {
 
     public static AccountsDTO mapToAccountsDTO(AccountsEntity source, AccountsDTO target) {
         target.setAccountType(source.getAccountType());
-        target.setCustomerId(source.getCustomerId());
+        target.setAccountNumber(source.getAccountNumber());
         target.setBranchAddress(source.getBranchAddress());
 
         return target;
@@ -15,7 +15,7 @@ public class AccountsMapper {
 
     public static AccountsEntity mapToAccountsEntity(AccountsDTO source, AccountsEntity target) {
         target.setAccountType(source.getAccountType());
-        target.setCustomerId(source.getCustomerId());
+        target.setAccountNumber(source.getAccountNumber());
         target.setBranchAddress(source.getBranchAddress());
 
         return target;

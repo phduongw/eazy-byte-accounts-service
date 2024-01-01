@@ -1,5 +1,9 @@
 package com.dcorp.hightech.acounts.controllers.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -8,10 +12,16 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomerDTO {
 
+    @NotEmpty(message = "Name can't be a null or empty")
+    @Size(min = 5, max = 30, message = "The length of the customer name should be between 5 and 30")
     String name;
 
+    @Email(message = "Email address should be a valid value")
+    @NotEmpty(message = "Email address can't be a null or empty")
     String email;
 
+    @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile number must be 10 digits")
     String mobileNumber;
 
+    AccountsDTO account;
 }
