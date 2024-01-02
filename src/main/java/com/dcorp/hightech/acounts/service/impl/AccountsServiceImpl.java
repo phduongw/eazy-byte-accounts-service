@@ -66,7 +66,6 @@ public class AccountsServiceImpl implements AccountsService {
 
     @Override
     public boolean updateAccount(CustomerDTO request) {
-        boolean isUpdated = false;
         AccountsDTO inputAccount = request.getAccount();
         if (Objects.nonNull(inputAccount)) {
             AccountsEntity account = accountsRepository
@@ -84,10 +83,10 @@ public class AccountsServiceImpl implements AccountsService {
             CustomerMapper.mapToCustomerEntity(request, customer);
             customerRepository.save(customer);
 
-            isUpdated = true;
+            return true;
         }
 
-        return isUpdated;
+        return false;
     }
 
     @Override

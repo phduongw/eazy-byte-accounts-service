@@ -4,6 +4,10 @@ import com.dcorp.hightech.acounts.constants.AccountConstants;
 import com.dcorp.hightech.acounts.controllers.dto.CustomerDTO;
 import com.dcorp.hightech.acounts.controllers.dto.ResponseDTO;
 import com.dcorp.hightech.acounts.service.AccountsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -19,11 +23,23 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
+@Tag(
+        name = "CRUD REST APIs for Accounts in EazyBank",
+        description = "CRUD REST APIs in EazyBank to CREATE, UPDATE, FETCH and DELETE Account Details"
+)
 public class AccountsController {
 
     private final AccountsService accountsService;
 
     @PostMapping("/create")
+    @Operation(
+            summary = "Create Account REST API",
+            description = "REST API to create new Customer & Account inside EazyBank"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "HTTP Status CREATED"
+    )
     public ResponseEntity<ResponseDTO> createAccount(@Valid @RequestBody CustomerDTO request) {
         accountsService.createAccount(request);
 
@@ -33,6 +49,14 @@ public class AccountsController {
     }
 
     @GetMapping("/fetch")
+    @Operation(
+            summary = "Fetch Account REST API",
+            description = "REST API to FETCH Customer & Account details based on a Mobile Number"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+    )
     public ResponseEntity<CustomerDTO> fetchAccountDetails(
             @RequestParam
             @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile Number must be 10 digits") String mobileNumber
@@ -43,6 +67,20 @@ public class AccountsController {
     }
 
     @PutMapping("update")
+    @Operation(
+            summary = "UPDATE Account REST API",
+            description = "REST API to update Customer & Account details based on a Mobile Number"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error"
+            )
+    })
     public ResponseEntity<ResponseDTO> updateAccountDetails(@Valid @RequestBody CustomerDTO request) {
         boolean isUpdated = accountsService.updateAccount(request);
 
@@ -50,6 +88,20 @@ public class AccountsController {
     }
 
     @DeleteMapping("/delete")
+    @Operation(
+            summary = "DELETE Account REST API",
+            description = "REST API to delete Customer & Account details based on a Mobile Number"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error"
+            )
+    })
     public ResponseEntity<ResponseDTO> deleteAccountDetails(
             @RequestParam
             @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile Number must be 10 digits") String mobileNumber
