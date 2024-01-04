@@ -3,10 +3,12 @@ package com.dcorp.hightech.acounts.controllers;
 import com.dcorp.hightech.acounts.constants.AccountConstants;
 import com.dcorp.hightech.acounts.controllers.dto.CustomerDTO;
 import com.dcorp.hightech.acounts.controllers.dto.ResponseDTO;
+import com.dcorp.hightech.acounts.controllers.response.ErrorResponse;
 import com.dcorp.hightech.acounts.service.AccountsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -66,25 +68,30 @@ public class AccountsController {
         return ResponseEntity.status(HttpStatus.OK).body(customer);
     }
 
-    @PutMapping("update")
+    @PutMapping("/update")
     @Operation(
             summary = "UPDATE Account REST API",
             description = "REST API to update Customer & Account details based on a Mobile Number"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "HTTP Status OK"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "HTTP Status Internal Server Error"
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+    )
+    @ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
             )
-    })
+    )
+    @ApiResponse(
+            responseCode = "417",
+            description = "Exception Failed"
+    )
     public ResponseEntity<ResponseDTO> updateAccountDetails(@Valid @RequestBody CustomerDTO request) {
         boolean isUpdated = accountsService.updateAccount(request);
 
-        return responseOfModifyingObject(isUpdated);
+        return responseOfModifyingObject(isUpdated, AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_UPDATE);
     }
 
     @DeleteMapping("/delete")
@@ -92,25 +99,30 @@ public class AccountsController {
             summary = "DELETE Account REST API",
             description = "REST API to delete Customer & Account details based on a Mobile Number"
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "HTTP Status OK"
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "HTTP Status Internal Server Error"
+    @ApiResponse(
+            responseCode = "200",
+            description = "HTTP Status OK"
+    )
+    @ApiResponse(
+            responseCode = "500",
+            description = "HTTP Status Internal Server Error",
+            content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class)
             )
-    })
+    )
+    @ApiResponse(
+            responseCode = "417",
+            description = "Exception Failed"
+    )
     public ResponseEntity<ResponseDTO> deleteAccountDetails(
             @RequestParam
             @Pattern(regexp = "(^$|[0-9]{10})", message = "Mobile Number must be 10 digits") String mobileNumber
     ) {
         boolean isDeleted = accountsService.deleteAccount(mobileNumber);
-        return responseOfModifyingObject(isDeleted);
+        return responseOfModifyingObject(isDeleted, AccountConstants.STATUS_417, AccountConstants.MESSAGE_417_DELETE);
     }
 
-    private ResponseEntity<ResponseDTO> responseOfModifyingObject(boolean isUpdated) {
+    private ResponseEntity<ResponseDTO> responseOfModifyingObject(boolean isUpdated, String statusCode, String message) {
         if (isUpdated) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -118,7 +130,9 @@ public class AccountsController {
         }
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDTO(AccountConstants.STATUS_500, AccountConstants.MESSAGE_500));
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(new ResponseDTO(statusCode, message));
     }
+
+// 1:B, 2:C, 3:B - A, 4:C, 5:C - A, 6:B, 7:A - C, 8: A, 9: A, 10: A
 }
