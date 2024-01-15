@@ -7,6 +7,10 @@ import com.dcorp.hightech.acounts.entities.CustomerEntity;
 
 public class CustomerMapper {
 
+    private CustomerMapper() {
+
+    }
+
     public static CustomerDTO mapToCustomerDTO(CustomerEntity source, CustomerDTO target) {
         target.setName(source.getName());
         target.setEmail(source.getEmail());
