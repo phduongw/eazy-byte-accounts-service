@@ -1,6 +1,7 @@
 package com.dcorp.hightech.acounts.controllers;
 
 import com.dcorp.hightech.acounts.constants.AccountConstants;
+import com.dcorp.hightech.acounts.controllers.dto.AccountContactDto;
 import com.dcorp.hightech.acounts.controllers.dto.CustomerDTO;
 import com.dcorp.hightech.acounts.controllers.dto.ResponseDTO;
 import com.dcorp.hightech.acounts.controllers.response.ErrorResponse;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,13 @@ import org.springframework.web.bind.annotation.*;
 public class AccountsController {
 
     private final AccountsService accountsService;
+
+//    @Value("${build.version}")
+//    private String buildVersion;
+
+    private final Environment environment;
+
+    private final AccountContactDto contactDto;
 
     @PostMapping("/create")
     @Operation(
@@ -134,5 +143,17 @@ public class AccountsController {
                 .body(new ResponseDTO(statusCode, message));
     }
 
-// 1:B, 2:C, 3:B - A, 4:C, 5:C - A, 6:B, 7:A - C, 8: A, 9: A, 10: A
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(environment.getProperty("build.version"));
+    }
+
+    @GetMapping("/contact-details")
+    public ResponseEntity<AccountContactDto> getContactDetails() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(contactDto);
+    }
 }

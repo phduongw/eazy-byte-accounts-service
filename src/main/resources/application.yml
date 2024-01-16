@@ -15,3 +15,14 @@ spring:
       ddl-auto: update
     show-sql: true
     defer-datasource-initialization: true
+
+build:
+  version: "1.0"
+accounts:
+  message: "Welcome to EazyBank accounts related to local APIs"
+  contactDetails:
+    name: "Egan Pham - Developer"
+    email: "eganpham.99@gmail.com"
+  onCallSupport:
+    - (+84) 989 211 621
+    - (+84) 989 213 418
